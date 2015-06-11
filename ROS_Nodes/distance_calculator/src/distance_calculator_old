@@ -1,0 +1,109 @@
+/*!
+ * \file distance_calculator.cpp
+ * \brief Tracks the distance travelled by the robot and publishes it to the distance_travelled topic
+ *
+ * Tracks the distance a robot has travelled, by comparing transform data over the given interval, and 
+ * publishes the distance travelled to the distance_travelled topic. 
+ * @param 1 = Name of the Robot that is being used
+ * @param 2 = Frequency (in Hz) that ROS should run at
+ *
+ * \author Chris Rhodan rhodanchris@gmail.com	
+ * \date 11 Sep, 2014
+ */
+
+#include <ros/ros.h>
+#include <tf/transform_listener.h>
+#include <std_msgs/Float64.h>
+#include <distance_calculator/distance_travelled_msg.h>
+
+
+int main(int argc, char ** argv)
+{
+
+	// Initialize the ros node for use
+	ros::init(argc, argv, "distance_calculator");
+
+	// Node Handle for the distance_calculator Node that will be used
+	ros::NodeHandle nh;
+
+	// Create a new ROS Publisher and Advertise the distance travelled as a distance_travelled_msg
+	ros::Publisher pub = nh.advertise<distance_calculator::distance_travelled_msg>("distance_travelled", 2, true);
+
+	// Create the message that will hold the distance travelled and the name of the robot publishing that data, 
+	// this message is what will actually be published
+	distance_calculator::distance_travelled_msg distance_travelled;
+
+	// Listener to listen to the transforms being published by the robot, as distance travelled will be based 
+	// on the data from these transforms
+	tf::TransformListener listener;
+
+	// Variables to hold the current and previous transforms
+	tf::StampedTransform previousTransform;
+	tf::StampedTransform currentTransform;
+
+	// Wait for the listener to receive initial tf information
+	listener.waitForTransform("base_footprint", "odom_combined", ros::Time(0), ros::Duration(1.0));
+
+	// Record the starting transformation into variable previousTransform, as it will (hopefully but not always) have
+	// moved by the first time it's position is checked for comparison
+	listener.lookupTransform("base_footprint", "odom_combined", ros::Time(0), previousTransform);
+
+	
+
+	// Variable to track the total distance travelled so far, this will be converted into the ROS message
+	// distance_travelled for publication whenever it is updated
+	double distanceTravelled = 0;
+	ROS_INFO("Initial distance is %f", distanceTravelled);
+
+	// Add the name of the robot to the published topic based on the first argument passed
+	distance_travelled.robot_name = argv[1];
+
+	// Convert the initial distanceTravelled to a ROS Message and publish the initial distanceTravelled value of 
+	// 0 so we have a starting point for subscribers to access
+	distance_travelled.distance_travelled.data = distanceTravelled;
+	pub.publish(distance_travelled);
+
+	// Set the  frequency for the Node to run at based on the second argument passed
+	// Higher Frequency = more accurate distance information but greater CPU/Resource Usage
+	// Lower Frequency = less accurate distance information but less CPU/Resource Usage
+
+	ros::Rate rate(atof(argv[2]));
+
+
+	ROS_INFO("Initialised");
+
+	
+
+	while(nh.ok()){
+		try
+		{	
+			// Update the current transformation info to the robot's current location
+			listener.lookupTransform("base_footprint", "odom_combined", ros::Time(0), currentTransform);
+		}
+		catch (tf::TransformException ex)
+		{
+			ROS_ERROR("%s", ex.what());
+			break;
+		}
+
+		/* Calculate the distance travelled by the robot between this transformation and the last, note that
+		 * this calculation is a direct vector between the two locations so will not take into account the
+		 * exact distance if the robot moves at angle (for example, if it goes around a corner).
+		 */
+		tf::Transform differenceInTransformation = previousTransform.inverse() * currentTransform;
+
+		// Add the distance travelled since last transform to the total distance travelled
+		distanceTravelled += differenceInTransformation.getOrigin().length();
+
+		// Set the current location of the robot as the previousTransform
+		previousTransform = currentTransform;
+		ROS_INFO("Distance is %fm", distanceTravelled);
+
+		// Convert the total distance travelled into the ROS message and then publish it
+		distance_travelled.distance_travelled.data = distanceTravelled;
+		pub.publish(distance_travelled);
+
+		rate.sleep();
+
+	}
+}

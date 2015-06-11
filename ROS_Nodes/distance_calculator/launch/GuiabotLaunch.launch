@@ -1,0 +1,7 @@
+<launch>
+
+<node pkg="distance_calculator" type="distance_calculator" name="DistanceCalculator" args="guiabot" cwd="node" output="screen" />
+
+<node pkg="people_calculator" type="people_calculator" name="PeopleCalculator" args="guiabot"  cwd="node" output="screen" />
+
+</launch>
