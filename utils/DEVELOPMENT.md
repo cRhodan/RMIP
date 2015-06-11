@@ -24,11 +24,11 @@ Twitter Development
 
 * First of all, to use any Twitter functionality you will need to create a Twitter account and then authorise the site as a Twitter app through https://apps.twitter.com/ where you will be provided a secret and public key.
 
-* With a secret and public key, you need to enter them, as well as the account name, in the provided spaces within the bootstrap.php file located [here](/Plugin/Twitter/Config/bootstrap.php)
+* With a secret and public key, you need to enter them, as well as the account name, in the provided spaces within the bootstrap.php file located [here](/app/Plugin/Twitter/Config/bootstrap.php)
 
-* There are two locations within the site where Twitter functionality can be added. The first is the automated interface controller located [here](/Controller/AutomatedInterfaceController.php) which is where any Twitter developments that do not need to be called every 5 seconds are located.
+* There are two locations within the site where Twitter functionality can be added. The first is the automated interface controller located [here](/app/Controller/AutomatedInterfaceController.php) which is where any Twitter developments that do not need to be called every 5 seconds are located.
 
-* If your Twitter functionality needs to be called every 5 seconds (this is the fastest the Twitter API allows you to access status updates), then it can be placed in the Twitter Controller located [here](/Controller/TwitterController.php) though some extension work will be required just to allow for multiple functions. You will also have to modify the automated_script.py python script to call your modified functions.
+* If your Twitter functionality needs to be called every 5 seconds (this is the fastest the Twitter API allows you to access status updates), then it can be placed in the Twitter Controller located [here](/app/Controller/TwitterController.php) though some extension work will be required just to allow for multiple functions. You will also have to modify the automated_script.py python script to call your modified functions.
 
 *When your site is running on the server and you want to use the functionality in the Twitter Controller described above, simply run the automated_script.py python code which will call the Twitter controller as close to every 5 seconds as it can.
 
