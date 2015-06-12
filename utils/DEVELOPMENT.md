@@ -24,7 +24,7 @@ Twitter Development
 
 * First of all, to use any Twitter functionality you will need to create a Twitter account and then authorise the site as a Twitter app through https://apps.twitter.com/ where you will be provided a secret and public key.
 
-* With a secret and public key, you need to enter them, as well as the account name, in the provided spaces within the bootstrap.php file located [here](/app/Plugin/Twitter/Config/bootstrap.php)
+* With a secret and public key, you need to enter them, as well as the account name, in the provided spaces within the bootstrap.php file located [here](/app/Plugin/Twitter/Config/bootstrap.php) as well as in the Twitter_Settings database table.
 
 * There are two locations within the site where Twitter functionality can be added. The first is the automated interface controller located [here](/app/Controller/AutomatedInterfaceController.php) which is where any Twitter developments that do not need to be called every 5 seconds are located.
 
