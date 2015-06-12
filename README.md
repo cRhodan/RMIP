@@ -14,7 +14,7 @@ To facilitate this, two simple ROS Nodes were also created and these are include
 
 ### Setup
 
-To install the RMS base setup, please follow the steps found on the RMS repository [Here](https://github.com/WPI-RAIL/rms). Once this setup is complete, then create a backup of the database.php file found at: "rms/app/config/database.php" and replace the RMS folder with the one contained in this repository, replacing the databse.php file from this repository with your own.
+To install the RMS base setup, please follow the steps found on the RMS repository [Here](https://github.com/WPI-RAIL/rms). Once this setup is complete, then create a backup of the database.php file found at: "rms/app/config/database.php" and replace the RMS folder with the one contained in this repository, replacing the databse.php file from this repository with your own. Similarly, you will need to update the default RMS database with the one provided in the root of this project.
 
 To use the functionality provided by the site, you will need to change a couple of addresses to match your installation. The lines that need to be changed are lines 135, 141 and 151 in [TwitterController.php](/app/Controller/TwitterController.php) and line 13 in [automated_script.py](automated_script.py). Change these to reflect the file path in your server.
 
